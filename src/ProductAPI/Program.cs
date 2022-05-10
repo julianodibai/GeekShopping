@@ -14,7 +14,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 #region Dependency Injection
-
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 #endregion
@@ -34,12 +33,12 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 #region Database
 
-var connection = builder.Configuration["MySQlConnection:MySQlConnectionString"];
+var connectionString = builder.Configuration.GetConnectionString("ProductAPI");
 
-builder.Services.AddDbContext<ProductContext>(options => options.
-            UseMySql(connection,
-                        new MySqlServerVersion(
-                            new Version(8, 0, 5))));
+builder.Services.AddDbContext<ProductContext>(options => options
+        .UseSqlServer(connectionString),
+        ServiceLifetime.Transient
+        );
 #endregion
 
 var app = builder.Build();
