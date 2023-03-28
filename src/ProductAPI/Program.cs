@@ -18,19 +18,6 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 #endregion
 
-#region AutoMapper
-
-var autoMapperConfig = new MapperConfiguration(cfg =>
-                {
-                    cfg.CreateMap<Product, ProductDTO>().ReverseMap();
-                });
-
-builder.Services.AddSingleton(autoMapperConfig.CreateMapper());
-
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-#endregion
-
 #region Database
 
 var connectionString = builder.Configuration.GetConnectionString("ProductAPI");
@@ -39,6 +26,21 @@ builder.Services.AddDbContext<ProductContext>(options => options
         .UseSqlServer(connectionString),
         ServiceLifetime.Transient
         );
+
+#endregion
+
+#region AutoMapper
+
+var autoMapperConfig = new MapperConfiguration(cfg =>
+                    {
+                        cfg.CreateMap<Product, ProductDTO>().ReverseMap();
+                        cfg.CreateMap<Product, ProductAddDTO>().ReverseMap();
+                    });
+
+builder.Services.AddSingleton(autoMapperConfig.CreateMapper());
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 #endregion
 
 var app = builder.Build();

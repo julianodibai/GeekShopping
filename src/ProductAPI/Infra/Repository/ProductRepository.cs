@@ -33,7 +33,7 @@ namespace ProductAPI.Infra.Repository
             return _mapper.Map<ProductDTO>(product);    
         }
 
-        public async Task<ProductDTO> Create(ProductDTO productDTO)
+        public async Task<ProductAddDTO> Create(ProductAddDTO productDTO)
         {
             Product product = _mapper.Map<Product>(productDTO);
 
@@ -41,7 +41,7 @@ namespace ProductAPI.Infra.Repository
 
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<ProductDTO>(product);
+            return _mapper.Map<ProductAddDTO>(product);
         }
 
         public async Task<ProductDTO> Update(ProductDTO productDTO)
