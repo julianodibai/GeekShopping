@@ -1,7 +1,16 @@
+using WEB.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+#region DI
+builder.Services.AddHttpClient<IProductService, ProductService>(c => 
+                    c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"])
+                    );
+
+#endregion
 
 var app = builder.Build();
 
