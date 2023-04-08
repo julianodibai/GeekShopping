@@ -10,8 +10,9 @@ namespace WEB.Utils
         public static async Task<T> ReadContentAs<T>(this HttpResponseMessage response)
         {
             if (!response.IsSuccessStatusCode)
-                throw new ApplicationException($"Algo de errado não está certo: " +
-                                               $"{response.ReasonPhrase}");
+                throw new ApplicationException(
+                    $"Algo de errado não está certo: " +
+                    $"{response.ReasonPhrase}");
 
             var dataAsString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 

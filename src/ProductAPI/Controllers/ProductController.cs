@@ -36,7 +36,7 @@ namespace ProductAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ProductAddDTO>> Create(ProductAddDTO dto)
+        public async Task<ActionResult<ProductAddDTO>> Create([FromBody] ProductAddDTO dto)
         {
             if (dto == null) 
                 return BadRequest();
@@ -47,7 +47,7 @@ namespace ProductAPI.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<ProductDTO>> Update(ProductDTO dto)
+        public async Task<ActionResult<ProductDTO>> Update([FromBody] ProductDTO dto)
         {
             if (dto == null)
                 return BadRequest();

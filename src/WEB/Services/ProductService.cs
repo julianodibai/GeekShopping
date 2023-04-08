@@ -49,7 +49,7 @@ namespace WEB.Services
 
         public async Task<bool> DeleteProductById(long id)
         {
-            var response = await _client.GetAsync($"{basePath}/{id}");
+            var response = await _client.DeleteAsync($"{basePath}/{id}");
 
             if (!response.IsSuccessStatusCode)
                 throw new Exception("Erro ao chamar a api");
