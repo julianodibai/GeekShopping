@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WEB.Models;
 using WEB.Services;
+using WEB.Utils;
 
 namespace WEB.Controllers
 {
@@ -13,6 +15,7 @@ namespace WEB.Controllers
             _productService = productService ?? throw new ArgumentNullException(nameof(productService));
         }
 
+        [Authorize]
         public async Task<IActionResult> ProductIndex()
         {
             var products = await _productService.FindAllProducts();
@@ -25,6 +28,7 @@ namespace WEB.Controllers
             return View();
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> ProductCreate(ProductModel model)
         {
@@ -47,6 +51,7 @@ namespace WEB.Controllers
             return NotFound();
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> ProductUpdate(ProductModel model)
         {
@@ -59,6 +64,8 @@ namespace WEB.Controllers
 
             return View(model);
         }
+
+        [Authorize]
         public async Task<IActionResult> ProductDelete(int id)
         {
             var product = await _productService.FindById(id);
@@ -68,6 +75,7 @@ namespace WEB.Controllers
             return NotFound();
         }
 
+        [Authorize(Roles = Role.Admin)]
         [HttpPost]
         public async Task<IActionResult> ProductDelete(ProductModel model)
         {

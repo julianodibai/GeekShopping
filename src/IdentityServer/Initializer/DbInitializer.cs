@@ -13,9 +13,7 @@ namespace GeekShopping.IdentityServer.Initializer
         private readonly UserManager<ApplicationUser> _user;
         private readonly RoleManager<IdentityRole> _role;
 
-        public DbInitializer(IdentityContext context,
-            UserManager<ApplicationUser> user,
-            RoleManager<IdentityRole> role)
+        public DbInitializer(IdentityContext context, UserManager<ApplicationUser> user, RoleManager<IdentityRole> role)
         {
             _context = context;
             _user = user;
@@ -24,7 +22,9 @@ namespace GeekShopping.IdentityServer.Initializer
 
         public void Initialize()
         {
-            if (_role.FindByNameAsync(IdentityConfiguration.Admin).Result != null) return;
+            if (_role.FindByNameAsync(IdentityConfiguration.Admin).Result != null) 
+                return;
+
             _role.CreateAsync(new IdentityRole(
                 IdentityConfiguration.Admin)).GetAwaiter().GetResult();
             _role.CreateAsync(new IdentityRole(
@@ -43,6 +43,7 @@ namespace GeekShopping.IdentityServer.Initializer
             _user.CreateAsync(admin, "Erudio123$").GetAwaiter().GetResult();
             _user.AddToRoleAsync(admin,
                 IdentityConfiguration.Admin).GetAwaiter().GetResult();
+
             var adminClaims = _user.AddClaimsAsync(admin, new Claim[]
             {
                 new Claim(JwtClaimTypes.Name, $"{admin.FirstName} {admin.LastName}"),
