@@ -1,5 +1,7 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using ProductAPI.Infra.Context;
 using ProductAPI.Infra.Repository;
 using ProductAPI.Models;
@@ -11,7 +13,53 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddSwaggerGen();
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer(opt =>
+    {
+        opt.Authority = "https://localhost:4435/";
+        opt.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateAudience = false,
+        };
+    });
+builder.Services.AddAuthorization(opt =>
+{
+    opt.AddPolicy("ApiScope", p =>
+    {
+        p.RequireAuthenticatedUser();
+        p.RequireClaim("scope", "geek_shopping");
+    });
+});
+
+builder.Services.AddSwaggerGen(s =>
+{
+    s.SwaggerDoc("v1", new OpenApiInfo { Title = "GeekShoopping.ProductAPI", Version = "v1" });
+    s.EnableAnnotations();
+    s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = @"Enter 'Bearer' [space] and your token!",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+    s.AddSecurityRequirement(new OpenApiSecurityRequirement {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header
+            },
+            new List<string>()
+        } 
+    }); 
+});
 
 #region Dependency Injection
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -52,6 +100,8 @@ app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GeekShopping.ProductAPI v1"));
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
